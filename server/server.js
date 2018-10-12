@@ -19,7 +19,17 @@ app.use(express.static(publicPath))
 io.on('connection', (socket) => {
   console.log('New User Connected');
 
+  socket.emit('newMessage', {
+    from: 'Admin',
+    text: 'Welcome to the chat!',
+    createdAt: new Date().getTime()
+  });
 
+  socket.broadcast.emit('newMessage', {
+    from: 'Admin',
+    text: 'New user in chat',
+    createdAt: new Date().getTime()
+  });
 
   socket.on('createMessage', (newMessage) => {
     console.log(newMessage);
@@ -27,7 +37,12 @@ io.on('connection', (socket) => {
       from: newMessage.from,
       text: newMessage.text,
       createdAt: new Date().getTime()
-    })
+    });
+    // socket.broadcast.emit('newMessage', {
+    //   from: newMessage.from,
+    //   text: newMessage.text,
+    //   createdAt: new Date().getTime()
+    // });
   });
 
   socket.on('disconnect', () => {
